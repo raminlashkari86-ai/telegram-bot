@@ -31,9 +31,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────── تنظیمات ───────────────────────────
-BOT_TOKEN = os.environ.get("8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E", "").strip()
-ADMIN_ID_RAW = os.environ.get("71031452", "").strip()
-ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.lstrip("-").isdigit() else 0
+BOT_TOKEN = "8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E"
+ADMIN_ID = 71031452
 
 DATA_FILE = os.environ.get("DATA_FILE", "data.json")
 MAX_REMEMBERED = 5000
