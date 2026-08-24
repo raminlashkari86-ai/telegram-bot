@@ -307,7 +307,15 @@ def main():
     if os.environ.get("RENDER") or os.environ.get("PORT"):
         threading.Thread(target=run_health_server, daemon=True).start()
 
-    app = Application.builder().token(BOT_TOKEN).build()
+        app = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .connect_timeout(30)
+        .read_timeout(30)
+        .write_timeout(30)
+        .pool_timeout(30)
+        .build()
+    )
 
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("help", cmd_start))
@@ -322,7 +330,13 @@ def main():
     app.add_handler(MessageHandler(filters.COMMAND, on_other_command))
 
     logger.info("bot started (polling)…")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+        while True:
+        try:
+            app.run_polling(allowed_updates=Update.ALL_TYPES)
+            break
+        except Exception as exc:
+            logger.error("network error: %s — retrying in 10s", exc)
+            time.sleep(10)
 
 
 if __name__ == "__main__":
