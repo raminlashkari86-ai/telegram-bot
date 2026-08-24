@@ -34,7 +34,7 @@ ADMIN_ID_RAW = os.environ.get("71031452", "").strip()
 # ════════════════════════════════════════════════════════════
 
 ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.lstrip("-").isdigit() else 0
-
+8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E
 DATA_FILE = os.environ.get("DATA_FILE", "data.json")
 MAX_REMEMBERED = 5000
 
