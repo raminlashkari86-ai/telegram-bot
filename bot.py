@@ -29,8 +29,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ══════════════ 🔑 فقط همین ۲ خط را تغییر بده ══════════════
-BOT_TOKEN = os.environ.get("8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E", "").strip() or "87******:توکن_جدید_اینجا"
-ADMIN_ID_RAW = os.environ.get("71031452", "").strip() or "71031452"
+BOT_TOKEN = os.environ.get("8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E", "").strip()
+ADMIN_ID_RAW = os.environ.get("71031452", "").strip()
 # ════════════════════════════════════════════════════════════
 
 ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.lstrip("-").isdigit() else 0
