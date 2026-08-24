@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 ربات پشتیبانی تلگرام
-BOT_TOKEN  → توکنی که BotFather می‌دهد
-ADMIN_ID   → آیدی عددی شما (از @userinfobot)
 """
 
 import os
@@ -30,23 +28,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ─────────────────────────── تنظیمات ───────────────────────────
-BOT_TOKEN = "8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E"
-ADMIN_ID = 71031452
+# ══════════════ 🔑 فقط همین ۲ خط را تغییر بده ══════════════
+BOT_TOKEN = os.environ.get("8784120583:AAHftJDUue1gYvCPRfKeC7fMuDfT9PMhk2E", "").strip() or "87******:توکن_جدید_اینجا"
+ADMIN_ID_RAW = os.environ.get("71031452", "").strip() or "71031452"
+# ════════════════════════════════════════════════════════════
+
+ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.lstrip("-").isdigit() else 0
 
 DATA_FILE = os.environ.get("DATA_FILE", "data.json")
 MAX_REMEMBERED = 5000
 
-# ─────────────────── ذخیره‌سازی ساده (JSON) ───────────────────
+
 def load_db():
     try:
         with open(DATA_FILE, encoding="utf-8") as f:
             db = json.load(f)
     except Exception:
         db = {}
-    db.setdefault("users", {})    # user_id -> {name, username, time}
-    db.setdefault("msg_map", {})  # message_id (در چت مدیر) -> user_id
-    db.setdefault("blocked", [])  # کاربران مسدودشده
+    db.setdefault("users", {})
+    db.setdefault("msg_map", {})
+    db.setdefault("blocked", [])
     return db
 
 
@@ -83,7 +84,6 @@ def register_user(user):
     save_db()
 
 
-# ─────────────────────── متن‌های ربات ───────────────────────
 WELCOME = (
     "سلام! 👋\n"
     "به ربات ارتباط با مدیریت خوش آمدید.\n\n"
@@ -112,7 +112,6 @@ async def react(context: ContextTypes.DEFAULT_TYPE, chat_id: int, message_id: in
         pass
 
 
-# ───────────────────────── هندلرها ─────────────────────────
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id == ADMIN_ID:
         await update.message.reply_text(ADMIN_HELP, parse_mode="HTML")
@@ -275,7 +274,6 @@ async def on_other_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("پیامتان را به صورت متن، عکس، فایل یا ویس بفرستید ✉️")
 
 
-# ─────────────── وب‌سرور کوچک برای Render (۲۴ ساعته آنلاین) ───────────────
 def run_health_server():
     port = int(os.environ.get("PORT", "8080"))
 
@@ -299,15 +297,14 @@ def run_health_server():
     HTTPServer(("0.0.0.0", port), Handler).serve_forever()
 
 
-# ─────────────────────────── اجرا ───────────────────────────
 def main():
-    if not BOT_TOKEN or not ADMIN_ID:
-        raise SystemExit("❌ متغیرهای محیطی BOT_TOKEN و ADMIN_ID را تنظیم کنید.")
+    if "توکن_جدید_اینجا" in BOT_TOKEN or not ADMIN_ID:
+        raise SystemExit("❌ خط ۳۷: توکن را بنویسید!")
 
     if os.environ.get("RENDER") or os.environ.get("PORT"):
         threading.Thread(target=run_health_server, daemon=True).start()
 
-        app = (
+    app = (
         Application.builder()
         .token(BOT_TOKEN)
         .connect_timeout(30)
@@ -330,7 +327,7 @@ def main():
     app.add_handler(MessageHandler(filters.COMMAND, on_other_command))
 
     logger.info("bot started (polling)…")
-        while True:
+    while True:
         try:
             app.run_polling(allowed_updates=Update.ALL_TYPES)
             break
